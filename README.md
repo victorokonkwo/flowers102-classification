@@ -26,7 +26,7 @@ cd flowers102-classification
 
 2. Install dependencies:
 ```bash
-pip install -e .
+pip install -r requirements.txt
 ```
 
 ## Usage
@@ -59,6 +59,7 @@ python scripts/predict.py --image path/to/flower.jpg --checkpoint outputs/checkp
 
 ## Project Structure
 
+```
 flowers102-classification/
 ├── README.md                       # Project documentation
 ├── requirements.txt                # Dependencies
@@ -106,11 +107,11 @@ flowers102-classification/
     ├── checkpoints/                # Model checkpoints
     ├── logs/                       # Training logs
     └── results/                    # Results and metrics
-
+```
 
 ## Results
 
-The model achieves X% accuracy on the test set. Detailed performance metrics and visualizations can be found in the `outputs/results/` directory after training.
+The model achieves **X%** accuracy on the test set. Detailed performance metrics and visualizations can be found in the `outputs/results/` directory after training.
 
 ## License
 
