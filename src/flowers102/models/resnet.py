@@ -17,7 +17,7 @@ class ResNet50Classifier(nn.Module):
 
         Args:
             num_classes: Number of classes in the dataset
-            pretrained: Whether to use pre-trained weights 
+            pretrained: Whether to use pre-trained weights
         """
         super(ResNet50Classifier, self).__init__()
 
@@ -44,10 +44,10 @@ class ResNet50Classifier(nn.Module):
         """Unfreeze all layers."""
         for param in self.model.parameters():
             param.requires_grad = True
-    
+
     def get_trainable_parameters(self):
         """Get the parameters that should be trained."""
-        return [p for p in self.parameters() if p.requires_grad]
+        return [p for p in self.model.parameters() if p.requires_grad]
 
 
 def create_model(config):
@@ -62,9 +62,10 @@ def create_model(config):
     """
     model = ResNet50Classifier(num_classes=config.num_classes)
 
-    # Freeze the backbone if specified 
+    # Freeze the backbone if specified
     if config.freeze_backbone:
         model.freeze_backbone()
+        logger.info("Model backbone frozen")
 
     # Move model to device
     model = model.to(config.device)
@@ -82,20 +83,23 @@ def load_checkpoint(model, checkpoint_path, device=None):
         device: Device to load the model to
 
     Returns:
-        Model with loaded weights and metadata about the checkpoint 
+        Model with loaded weights and metadata about the checkpoint
     """
     if device is None:
         device = next(model.parameters()).device
-    
+
     checkpoint = torch.load(checkpoint_path, map_location=device)
 
     # Handle both direct state dict and checkpoint dictionary
-    if 'model_state_dict' in checkpoint:
-        model._load_state_dict(checkpoint['model_state_dict'])
-        metadata = {k: v for k, v in checkpoint.items() if k != 'model_state_dict'}
+    if "model_state_dict" in checkpoint:
+        model._load_state_dict(checkpoint["model_state_dict"])
+        logger.info(
+            f"Loaded best model with validation accuracy: {checkpoint['accuracy']:.4f}"
+        )
+
+        metadata = {k: v for k, v in checkpoint.items() if k != "model_state_dict"}
     else:
         model._load_state_dict(checkpoint)
         metadata = {}
-    
+
     return model, metadata
-    

@@ -18,8 +18,7 @@ import logging
 from flowers102.data.transforms import get_transforms
 
 logging.basicConfig(
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d:%H-%M-%S"
+    format="%(asctime)s - %(levelname)s - %(message)s", datefmt="%Y-%m-%d:%H-%M-%S"
 )
 logger = logging.getLogger(__name__)
 
@@ -31,15 +30,21 @@ class Flowers102Dataset(Dataset):
     This class handles the loading and preprocessing of the Flowers102 dataset.
     """
 
-
     # Dataset URLS
     DATASET_URL = "https://www.robots.ox.ac.uk/~vgg/data/flowers/102/102flowers.tgz"
-    SEGMENTATION_URL = "https://www.robots.ox.ac.uk/~vgg/data/flowers/102/102segmentations.tgz"
+    SEGMENTATION_URL = (
+        "https://www.robots.ox.ac.uk/~vgg/data/flowers/102/102segmentations.tgz"
+    )
     LABELS_URL = "https://www.robots.ox.ac.uk/~vgg/data/flowers/102/imagelabels.mat"
     SPLIT_URL = "https://www.robots.ox.ac.uk/~vgg/data/flowers/102/setid.mat"
 
-
-    def __init__(self, data_dir: typing.Union[str, Path], split: str = 'train', transform = None, download: bool =True):
+    def __init__(
+        self,
+        data_dir: typing.Union[str, Path],
+        split: str = "train",
+        transform=None,
+        download: bool = True,
+    ):
         """
         Intialize the dataset.
 
@@ -65,31 +70,29 @@ class Flowers102Dataset(Dataset):
     def _download_and_extract_dataset(self):
         """Download and extract the dataset files if they don't exist."""
         # Check if the image folder exists
-        if not (self.data_dir / 'jpg').exists():
+        if not (self.data_dir / "jpg").exists():
             # Download and extract images
-            images_path = self.data_dir / '102flowers.tgz'
+            images_path = self.data_dir / "102flowers.tgz"
             if not images_path.exists():
                 logger.info("Downloading dataset images...")
-                download_url(self.DATASET_URL, str(self.data_dir), '102flowers.tgz')
-            
+                download_url(self.DATASET_URL, str(self.data_dir), "102flowers.tgz")
+
             logger.info("Extracting dataset images...")
-            with tarfile.open(images_path, 'r:gz') as tar:
+            with tarfile.open(images_path, "r:gz") as tar:
                 tar.extractall(path=str(self.data_dir))
 
-        
         # Download labels if they don't exist
-        labels_path = self.data_dir / 'imagelabels.mat'
+        labels_path = self.data_dir / "imagelabels.mat"
         if not labels_path.exists():
             logger.info("Downloading image labels...")
-            download_url(self.LABELS_URL, str(self.data_dir), 'imagelabels.mat')
+            download_url(self.LABELS_URL, str(self.data_dir), "imagelabels.mat")
 
-        
         # Download splits if they don't exist
-        splits_path = self.data_dir / 'setid.mat'
+        splits_path = self.data_dir / "setid.mat"
         if not splits_path.exists():
             logger.info("Downloading dataset splits...")
-            download_url(self.SPLITS_URL, str(self.data_dir), 'setid.mat')
-    
+            download_url(self.SPLITS_URL, str(self.data_dir), "setid.mat")
+
     def _load_dataset_info(self) -> Tuple[List[Path], List[int]]:
         """
         Load image paths and labels for the specified split.
@@ -98,30 +101,29 @@ class Flowers102Dataset(Dataset):
             Tuple of image paths and corresponding labels
         """
         # Load the labels
-        labels_data = scipy.io.loadmat(str(self.data_dir / 'setid.mat'))
-        labels = labels_data['labels'][0].tolist()
+        labels_data = scipy.io.loadmat(str(self.data_dir / "setid.mat"))
+        labels = labels_data["labels"][0].tolist()
 
         # Convert to 0-indexed labels
         labels = [label - 1 for label in labels]
 
         # Load the splits
-        splits_data = scipy.io.loadmat(str(self.data_dir / 'setid.mat'))
+        splits_data = scipy.io.loadmat(str(self.data_dir / "setid.mat"))
 
-        if self.split == 'train':
-            indices = splits_data['trnid'][0].tolist()
-        elif self.split == 'val':
-            indices = splits_data['valid'][0].tolist()
-        elif self.split == 'test':
-            indices = splits_data['tstid'][0].tolist()
+        if self.split == "train":
+            indices = splits_data["trnid"][0].tolist()
+        elif self.split == "val":
+            indices = splits_data["valid"][0].tolist()
+        elif self.split == "test":
+            indices = splits_data["tstid"][0].tolist()
         else:
             raise ValueError(f"Invalid split: {self.split}")
 
         # Convert  to 0-indexed indicies
         indices = [idx - 1 for idx in indices]
 
-
         # Get the image paths and labels for this split
-        image_dir = self.data_dir / 'jpg'
+        image_dir = self.data_dir / "jpg"
         image_paths = []
         split_labels = []
 
@@ -133,7 +135,7 @@ class Flowers102Dataset(Dataset):
                 split_labels.append(labels[idx])
             else:
                 logger.warning(f"Image {image_path} not found!")
-        
+
         return image_paths, split_labels
 
     def __len__(self) -> int:
@@ -153,11 +155,11 @@ class Flowers102Dataset(Dataset):
         img_path = self.image_paths[idx]
         label = self.labels[idx]
 
-        img = Image.open(img_path).convert('RGB')
+        img = Image.open(img_path).convert("RGB")
 
         if self.transform:
             img = self.transform(img)
-        
+
         return img, label
 
 
@@ -177,23 +179,19 @@ def get_dataloaders(config):
     # Create datasets
     datasets = {
         split: Flowers102Dataset(
-            config.data_dir,
-            split=split,
-            transform=transforms[split],
-            download=True
+            config.data_dir, split=split, transform=transforms[split], download=True
         )
-        for split in ['train', 'val', 'test']
+        for split in ["train", "val", "test"]
     }
-
 
     # Create data loaders
     dataloaders = {
         split: DataLoader(
             dataset,
             batch_size=config.batch_size,
-            shuffle=(split == 'train'),
+            shuffle=(split == "train"),
             num_workers=config.num_workers,
-            pin_memory=config.device.type == 'cuda'
+            pin_memory=config.device.type == "cuda",
         )
         for split, dataset in datasets.items()
     }
