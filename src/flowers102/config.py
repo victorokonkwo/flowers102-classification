@@ -76,17 +76,19 @@ class Config:
         config = cls()
 
         # Update with command-line arguments if provided
-        if hasattr(args, 'batch_size'):
+        if hasattr(args, "batch_size"):
             config.batch_size = args.batch_size
         if hasattr(args, "num_workers"):
             config.num_workers = args.num_workers
-        if hasattr(args, 'learning_rate') or hasattr(args, 'lr'):
-            config.learning_rate = getattr(args, 'learning_rate', getattr(args, 'lr', 0.001))
-        if hasattr(args, 'num_epochs') or hasattr(args, 'epochs'):
-            config.num_epochs = getattr(args, 'num_epochs', getattr(args, 'epochs', 30))
-        if hasattr(args, 'freeze'):
+        if hasattr(args, "learning_rate") or hasattr(args, "lr"):
+            config.learning_rate = getattr(
+                args, "learning_rate", getattr(args, "lr", 0.001)
+            )
+        if hasattr(args, "num_epochs") or hasattr(args, "epochs"):
+            config.num_epochs = getattr(args, "num_epochs", getattr(args, "epochs", 30))
+        if hasattr(args, "freeze"):
             config.freeze_backbone = args.freeze
-        if hasattr(args, 'data_dir'):
+        if hasattr(args, "data_dir"):
             config.data_dir = Path(args.data_dir)
 
         # Re-initialized derived paths
