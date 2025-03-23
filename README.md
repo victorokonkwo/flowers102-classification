@@ -61,52 +61,52 @@ python scripts/predict.py --image path/to/flower.jpg --checkpoint outputs/checkp
 
 ```
 flowers102-classification/
-├── README.md                       # Project documentation
-├── requirements.txt                # Dependencies
-├── setup.py                        # Package installation script
-├── .gitignore                      # Git ignore file
-├── .flake8                         # Linting configuration
-├── pyproject.toml                  # Python project metadata
-├── src/                            # Source code directory
-│   └── flowers102/                 # Main package
-│       ├── __init__.py             # Package initialization
-│       ├── config.py               # Configuration settings 
-│       ├── data/                   # Data handling code
+├── README.md                   
+├── requirements.txt              
+├── setup.py                    
+├── .gitignore                     
+├── .flake8                       
+├── pyproject.toml              
+├── src/                           
+│   └── flowers102/              
+│       ├── __init__.py          
+│       ├── config.py             
+│       ├── data/               
 │       │   ├── __init__.py
-│       │   ├── dataset.py          # Dataset class implementation
-│       │   └── transforms.py       # Data transformations
-│       ├── models/                 # Model implementations
+│       │   ├── dataset.py       
+│       │   └── transforms.py    
+│       ├── models/                
 │       │   ├── __init__.py
-│       │   └── resnet.py           # ResNet50 model implementation
-│       ├── training/               # Training utilities
+│       │   └── resnet.py          
+│       ├── training/          
 │       │   ├── __init__.py
-│       │   ├── trainer.py          # Trainer class
-│       │   └── utils.py            # Training utilities
-│       └── utils/                  # General utilities
+│       │   ├── trainer.py      
+│       │   └── utils.py           
+│       └── utils/              
 │           ├── __init__.py
-│           ├── logging_utils.py    # Logging configurations
-│           └── visualization.py    # Visualization utilities
-├── scripts/                        # Executable scripts
-│   ├── train.py                    # Training script
-│   ├── evaluate.py                 # Evaluation script
-│   └── predict.py                  # Inference script
-├── tests/                          # Test directory
+│           ├── logging_utils.py   
+│           └── visualization.py  
+├── scripts/                       
+│   ├── train.py                
+│   ├── evaluate.py            
+│   └── predict.py          
+├── tests/                     
 │   ├── __init__.py
-│   ├── conftest.py                 # Test configuration
-│   ├── test_dataset.py             # Dataset tests
-│   ├── test_model.py               # Model tests
-│   └── test_training.py            # Training tests
-├── notebooks/                      # Jupyter notebooks
-│   └── exploratory_analysis.ipynb  # Data exploration
-├── data/                           # Data directory (gitignored)
-│   └── flowers102/                 # Flowers102 dataset
-│       ├── jpg/                    # Images directory
-│       ├── imagelabels.mat         # Image labels
-│       └── setid.mat               # Train/val/test splits
-└── outputs/                        # Output directory (gitignored)
-    ├── checkpoints/                # Model checkpoints
-    ├── logs/                       # Training logs
-    └── results/                    # Results and metrics
+│   ├── conftest.py               
+│   ├── test_dataset.py         
+│   ├── test_model.py         
+│   └── test_training.py         
+├── notebooks/                      
+│   └── exploratory_analysis.ipynb 
+├── data/                          
+│   └── flowers102/                
+│       ├── jpg/                 
+│       ├── imagelabels.mat     
+│       └── setid.mat             
+└── outputs/                       
+    ├── checkpoints/          
+    ├── logs/                     
+    └── results/                  
 ```
 
 ## Results
