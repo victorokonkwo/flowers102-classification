@@ -2,10 +2,16 @@
 ResNet50 model implementation for Flowers102 classification.
 """
 
+import os
+import ssl
 import torch
 import torch.nn as nn
 from torchvision import models
 from typing import Dict
+
+# Create an unverified context to bypass SSL certificate verification
+# This is needed on macOS to download pre-trained models
+ssl._create_default_https_context = ssl._create_unverified_context
 
 
 class ResNet50Classifier(nn.Module):
@@ -14,7 +20,7 @@ class ResNet50Classifier(nn.Module):
     def __init__(self, num_classes: int, pretrained: bool = True):
         """
         Initialize the ResNet50 model.
-
+        
         Args:
             num_classes: Number of classes in the dataset
             pretrained: Whether to use pre-trained weights
@@ -24,6 +30,7 @@ class ResNet50Classifier(nn.Module):
         # Load the pre-trained ResNet50 model
         self.model = models.resnet50(pretrained=pretrained)
 
+        # Replace the final fully connected layer
         in_features = self.model.fc.in_features
         self.model.fc = nn.Linear(in_features, num_classes)
 
@@ -47,16 +54,16 @@ class ResNet50Classifier(nn.Module):
 
     def get_trainable_parameters(self):
         """Get the parameters that should be trained."""
-        return [p for p in self.model.parameters() if p.requires_grad]
+        return [p for p in self.parameters() if p.requires_grad]
 
 
 def create_model(config):
     """
     Create a ResNet50 model.
-
+    
     Args:
         config: Configuration object
-
+        
     Returns:
         Initialized model
     """
@@ -65,7 +72,6 @@ def create_model(config):
     # Freeze the backbone if specified
     if config.freeze_backbone:
         model.freeze_backbone()
-        logger.info("Model backbone frozen")
 
     # Move model to device
     model = model.to(config.device)
@@ -76,12 +82,12 @@ def create_model(config):
 def load_checkpoint(model, checkpoint_path, device=None):
     """
     Load model weights from a checkpoint.
-
+    
     Args:
         model: Model to load weights into
         checkpoint_path: Path to the checkpoint file
         device: Device to load the model to
-
+        
     Returns:
         Model with loaded weights and metadata about the checkpoint
     """
@@ -92,14 +98,10 @@ def load_checkpoint(model, checkpoint_path, device=None):
 
     # Handle both direct state dict and checkpoint dictionary
     if "model_state_dict" in checkpoint:
-        model._load_state_dict(checkpoint["model_state_dict"])
-        logger.info(
-            f"Loaded best model with validation accuracy: {checkpoint['accuracy']:.4f}"
-        )
-
+        model.load_state_dict(checkpoint["model_state_dict"])
         metadata = {k: v for k, v in checkpoint.items() if k != "model_state_dict"}
     else:
-        model._load_state_dict(checkpoint)
+        model.load_state_dict(checkpoint)
         metadata = {}
 
     return model, metadata
