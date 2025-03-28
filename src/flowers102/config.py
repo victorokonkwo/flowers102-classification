@@ -1,5 +1,5 @@
 """
-Configuration module for Flower102 classification project.
+Configuration module for Flowers102 classification project.
 """
 
 import os
@@ -13,7 +13,9 @@ class Config:
     """Configuration for the model training process."""
 
     # Project paths
-    project_root: Path = field(default_factory=lambda: Path(__file__).parents[2].abs())
+    project_root: Path = field(
+        default_factory=lambda: Path(__file__).parents[2].absolute()
+    )
     data_dir: Path = field(
         default_factory=lambda: Path(__file__).parents[2] / "data" / "flowers102"
     )
@@ -45,7 +47,7 @@ class Config:
         )
     )
 
-    def __post_init(self):
+    def __post_init__(self):
         """Initialize derived paths and create required directories."""
         # Set derived paths
         self.checkpoint_dir = self.output_dir / "checkpoints"
@@ -75,23 +77,34 @@ class Config:
         """Create configuration from command-line arguments."""
         config = cls()
 
-        # Update with command-line arguments if provided
-        if hasattr(args, "batch_size"):
+        # Update with command line arguments if provided
+        if hasattr(args, "batch_size") and args.batch_size is not None:
             config.batch_size = args.batch_size
-        if hasattr(args, "num_workers"):
+
+        if hasattr(args, "num_workers") and args.num_workers is not None:
             config.num_workers = args.num_workers
-        if hasattr(args, "learning_rate") or hasattr(args, "lr"):
-            config.learning_rate = getattr(
-                args, "learning_rate", getattr(args, "lr", 0.001)
-            )
-        if hasattr(args, "num_epochs") or hasattr(args, "epochs"):
-            config.num_epochs = getattr(args, "num_epochs", getattr(args, "epochs", 30))
+
+        if hasattr(args, "learning_rate") and args.learning_rate is not None:
+            config.learning_rate = args.learning_rate
+        elif hasattr(args, "lr") and args.lr is not None:
+            config.learning_rate = args.lr
+
+        if hasattr(args, "num_epochs") and args.num_epochs is not None:
+            config.num_epochs = args.num_epochs
+        elif hasattr(args, "epochs") and args.epochs is not None:
+            config.num_epochs = args.epochs
+
         if hasattr(args, "freeze"):
             config.freeze_backbone = args.freeze
-        if hasattr(args, "data_dir"):
+
+        # Only update paths if they are provided
+        if hasattr(args, "data_dir") and args.data_dir is not None:
             config.data_dir = Path(args.data_dir)
 
-        # Re-initialized derived paths
+        if hasattr(args, "output_dir") and args.output_dir is not None:
+            config.output_dir = Path(args.output_dir)
+
+        # Re-initialize derived paths
         config._create_directories()
 
         return config

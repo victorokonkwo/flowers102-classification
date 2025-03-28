@@ -172,3 +172,18 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+# Project specific
+data/
+outputs/
+*.pth
+*.pt
+*.log
+
+# Jupyter Notebooks
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Miscellaneous 
+.DS_Store
