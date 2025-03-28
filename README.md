@@ -20,7 +20,7 @@ The [Flowers102 dataset](https://www.robots.ox.ac.uk/~vgg/data/flowers/102/) con
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/flowers102-classification.git
+git clone https://github.com/victorokonkwo/flowers102-classification.git
 cd flowers102-classification
 ```
 
