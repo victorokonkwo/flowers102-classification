@@ -26,6 +26,10 @@ cd flowers102-classification
 
 2. Install dependencies:
 ```bash
+python -m venv venv
+
+source venv/bin/activate
+
 pip install -r requirements.txt
 ```
 
