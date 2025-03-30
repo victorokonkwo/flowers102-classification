@@ -115,7 +115,7 @@ flowers102-classification/
 
 ## Results
 
-The model achieves **X%** accuracy on the test set. Detailed performance metrics and visualizations can be found in the `outputs/results/` directory after training.
+The model achieves **95%** accuracy on the test set. Detailed performance metrics and visualizations can be found in the `outputs/results/` directory after training.
 
 ## License
 
